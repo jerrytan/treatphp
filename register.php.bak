@@ -1,0 +1,39 @@
+<?php
+
+require_once('db_connect.php'); 
+
+//$employee_name  = 'name';
+$employee_name  = $_POST['name'];
+if(empty($employee_name)) {
+  die('Error: name is empty');
+}
+
+//$employee_phone = 'phone';
+$employee_phone = $_POST['phone'];
+if (empty($employee_phone)) {
+  die('Error: phone is empty');
+}
+
+$employee_created_time = date('Y-m-d H:i:s');
+
+$sql = 'insert into employee(name,phone,created_time) values ("'.$employee_name.'","'.$employee_phone.
+	'","'.$employee_created_time.'")';
+//echo $sql;
+
+if (!mysql_query($sql,$conn)) {
+    //die('Error: ' . mysql_error());
+}
+
+$sql = 'select id from employee where name ="'.$employee_name.'" and phone = "'.$employee_phone.'"';
+
+$res = mysql_query($sql,$conn)
+    or die('Error:' . mysql_error());
+$row = mysql_fetch_row($res);
+$id = $row[0];
+
+
+$result = array('Status'=>'OK','Message'=>'1 record added','eid'=>$id);
+echo json_encode($result);
+
+mysql_close($conn);
+?>
